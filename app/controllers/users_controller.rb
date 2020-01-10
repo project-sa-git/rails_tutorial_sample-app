@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
+  # include SessionsHelper  　#=> ヘルパー連動（AppConに）
   
+  # GET /users/:id
   def show
     @user = User.find(params[:id])
     # => app/views/users/show.html.erb
@@ -8,6 +10,7 @@ class UsersController < ApplicationController
   
   def new
     @user = User.new
+    # => form_for @user
   end
   
   def create
@@ -19,6 +22,7 @@ class UsersController < ApplicationController
     # 1行で完結
     @user = User.new(user_params)
       if @user.save #=> Validation
+      log_in @user #=> ユーザー登録時にログイン
       flash[:success] = "Welcome to the Sample App!"
       # Sucess
       # redirect_to user_path(@user.id)
