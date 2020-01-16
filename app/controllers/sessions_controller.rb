@@ -16,6 +16,10 @@ class SessionsController < ApplicationController
       # (【rubyの仕組み】falseとnil以外はtrue)
     if user && user.authenticate(params[:session][:password])
       log_in user
+      #（旧） remember user #=> SessionsHelperの。 ログイン後にrememberでnew_token発行してDB保存 save to DB
+      #  [remember me] チェックボックスの送信結果を処理する
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
+      #=> （cokies[:token] クッキー追加必要なのでsessionsヘルパーに引数付きremember(user)を追加する）
       redirect_to user
     else
       # Failure (sessionモデルがないのでバリデーションが使えない)
@@ -28,8 +32,23 @@ class SessionsController < ApplicationController
   
   # DELETE /logout
   def destroy
-    log_out
+    log_out if logged_in? # ログイン中の場合のみログアウト(log_outメソッドを実行)する
+    # log_out
     redirect_to root_url
+  end
+  
+   # 永続的セッション(Cookie)を破棄する
+  def forget(user)
+    user.forget
+    cookies.delete(:user_id)
+    cookies.delete(:remember_token)
+  end
+  
+  # 現在のユーザーをログアウトする
+  def log_out
+    forget(current_user)
+    session.delete(:user_id)
+    @current_user = nil
   end
   
 end
