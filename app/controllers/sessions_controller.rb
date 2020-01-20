@@ -18,9 +18,8 @@ class SessionsController < ApplicationController
       log_in user
       #（旧） remember user #=> SessionsHelperの。 ログイン後にrememberでnew_token発行してDB保存 save to DB
       #  [remember me] チェックボックスの送信結果を処理する
-      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
-      #=> （cokies[:token] クッキー追加必要なのでsessionsヘルパーに引数付きremember(user)を追加する）
-      redirect_to user
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user) #=> （cokies[:token] クッキー追加必要なのでsessionsヘルパーに引数付きremember(user)を追加する）
+      redirect_back_or user #=>  フレンドリーフォワーディングを備える  # 旧redirect_to user
     else
       # Failure (sessionモデルがないのでバリデーションが使えない)
       # （旧）　flash[:danger] = 'Invalid email/password combination'
