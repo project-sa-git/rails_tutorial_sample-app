@@ -32,14 +32,20 @@ class UsersController < ApplicationController
     # 1行で完結
     @user = User.new(user_params)
       if @user.save #=> Validation
-      log_in @user #=> ユーザー登録時にログイン
-      flash[:success] = "Welcome to the Sample App!"
         # Sucess
+        @user.send_activation_email #=>signup後にactivation_emailを送りつける
+        #不要 UserMailer.account_activation(@user).deliver_now
+        flash[:info] = "Please check your email to activate your account."
+        redirect_to root_url
+        
+        # 旧
+      # log_in @user #=> ユーザー登録時にログイン
+      # flash[:success] = "Welcome to the Sample App!"
+      # redirect_to @user
         # redirect_to user_path(@user.id)
         # user_pathの引数デフォルトがidなので「.id」省略可、
         # redirect_to user_path(@user)
         # さらにredirect_toのデフォルト挙動としてユーザオブジェクトを渡すとuser_pathになるので
-      redirect_to @user
       #GETリクエスト(が右にいく) => "/users/#{@user.id}" => showアクションが動く
       else
       #Failure

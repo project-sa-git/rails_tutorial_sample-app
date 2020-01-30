@@ -53,13 +53,15 @@ module SessionsHelper
   
   # 記憶トークンcookieに対応するユーザーを返す(新型)
   #=> ユーザオブジェクトが帰るか、nilが帰るか どちらか
+  # 現在ログイン中のユーザーを返す (いる場合)
   def current_user
     if (user_id = session[:user_id])
       @current_user ||= User.find_by(id: user_id)
     elsif (user_id = cookies.signed[:user_id]) #=> signedで復号化
     # raise       # テストがパスすれば、この部分がテストされていない(マズい)ことがわかる
       user = User.find_by(id: user_id)
-      if user && user.authenticated?(cookies[:remember_token])
+      #旧(引数不足) if user && user.authenticated?(cookies[:remember_token])
+      if user && user.authenticated?(:remember, cookies[:remember_token])
         log_in user
         @current_user = user
       end

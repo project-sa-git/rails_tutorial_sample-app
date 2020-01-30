@@ -15,11 +15,18 @@ class SessionsController < ApplicationController
       #=> User object or false
       # (【rubyの仕組み】falseとnil以外はtrue)
     if user && user.authenticate(params[:session][:password])
-      log_in user
-      #（旧） remember user #=> SessionsHelperの。 ログイン後にrememberでnew_token発行してDB保存 save to DB
-      #  [remember me] チェックボックスの送信結果を処理する
-      params[:session][:remember_me] == '1' ? remember(user) : forget(user) #=> （cokies[:token] クッキー追加必要なのでsessionsヘルパーに引数付きremember(user)を追加する）
-      redirect_back_or user #=>  フレンドリーフォワーディングを備える  # 旧redirect_to user
+      if user.activated? #=>上かつアクティベーションしてるか？
+        log_in user
+        #（旧） remember user #=> SessionsHelperの。 ログイン後にrememberでnew_token発行してDB保存 save to DB
+        #  [remember me] チェックボックスの送信結果を処理する
+        params[:session][:remember_me] == '1' ? remember(user) : forget(user) #=> （cokies[:token] クッキー追加必要なのでsessionsヘルパーに引数付きremember(user)を追加する）
+        redirect_back_or user #=>  フレンドリーフォワーディングを備える  # 旧redirect_to user
+      else
+        message  = "Account not activated. "
+        message += "Check your email for the activation link."
+        flash[:warning] = message
+        redirect_to root_url
+      end
     else
       # Failure (sessionモデルがないのでバリデーションが使えない)
       # （旧）　flash[:danger] = 'Invalid email/password combination'
