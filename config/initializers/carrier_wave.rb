@@ -10,10 +10,11 @@ if Rails.env.production?
     }
     config.fog_directory     =  ENV['S3_BUCKET']
     # キャッシュの保存期間
-    config.fog_attributes = { 'Cache-Control' => "max-age=#{365.day.to_i}" }
+    config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" } 
   end
   # 日本語ファイル名の設定
   CarrierWave::SanitizedFile.sanitize_regexp = /[^[:word:]\.\-\+]/ 
+  
 end
 
 # if Rails.env.production?
