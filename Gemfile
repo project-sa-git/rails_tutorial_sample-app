@@ -39,7 +39,7 @@ end
 
 group :production do
   gem 'pg', '0.20.0'
-  gem 'fog-aws'
+  gem 'fog-aws'#=>  gem 'fog', '1.42'から変更
 end
 
 # Windows環境ではtzinfo-dataというgemを含める必要があります
