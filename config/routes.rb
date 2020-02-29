@@ -19,6 +19,11 @@ Rails.application.routes.draw do
   get    '/login',   to: 'sessions#new'
   post   '/login',   to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
+  resources :users do
+    member do #=> /users/:id/ ...(この中に好きなの入れられる)
+      get :following, :followers #=> GET /users/1/following  ==> following action
+    end
+  end
   
   resources :users
   resources :account_activations, only: [:edit] 
@@ -27,6 +32,7 @@ Rails.application.routes.draw do
   # Controller: params[:id]
   resources :password_resets,     only: [:new, :create, :edit, :update]
   resources :microposts,          only: [:create, :destroy]
+  resources :relationships,       only: [:create, :destroy]
   
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   # root 'application#hello'
