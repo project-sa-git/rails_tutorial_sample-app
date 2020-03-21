@@ -39,3 +39,7 @@ $ rails server
 
 詳しくは、[*Ruby on Rails チュートリアル*](https://railstutorial.jp/)
 を参考にしてください。
+
+# ゲストユーザーログイン
+email   : "example@railstutorial.org"
+password: "foobar"
